@@ -1,39 +1,123 @@
-import { Component } from '@angular/core';
+import { ChangeDetectorRef, Component } from '@angular/core';
 import { Api } from '../../services/api';
-import { from } from 'rxjs';
-import { concatMap } from 'rxjs';
+import { from, concatMap, tap } from 'rxjs';
+import { ShowCard } from '../../components/show-card/show-card';
 
 @Component({
     selector: 'app-home',
-    imports: [],
+    imports: [ShowCard],
     templateUrl: './home.html',
     styleUrl: './home.css',
 })
 export class Home {
-    listIds: number[] = [
-        35062, // The Ancient Magus' Bride
-        53835, // Unnamed Memory
-        51122, // Spice and Wolf: Merchant Meets the Wise Wolf
-        42897, // Horimiya
-        36038, // Recovery of an MMO Junkie
-        32729, // Orange
-        52305, // Tomo-chan is a Girl!
-        36220, // Our love has always been 10 centimeters apart.
-        34822, // Tsukigakirei
-        54744, // Alya Sometimes Hides Her Feelings in Russian
-        39017, // In/Spectre
-    ];
-    listData: any[] = [];
+    pageData = [
+        // The Ancient Magus' Bride
+        {
+            'id': 35062,
+            'ratings': {
+                
+            },
+            'data': null
+        },
+        // Unnamed Memory
+        {
+            'id': 53835,
+            'ratings': {
 
-    constructor(private api: Api) {}
+            },
+            'data': null
+        },
+        // Spice and Wolf: Merchant Meets the Wise Wolf
+        {
+            'id': 51122,
+            'ratings': {
+
+            },
+            'data': null
+        },
+        // Horimiya
+        {
+            'id': 42897,
+            'ratings': {
+
+            },
+            'data': null
+        },
+        // Recovery of an MMO Junkie
+        {
+            'id': 36038,
+            'ratings': {
+
+            },
+            'data': null
+        },
+        // Orange
+        {
+            'id': 32729,
+            'ratings': {
+
+            },
+            'data': null
+        },
+        // Tomo-chan is a Girl!
+        {
+            'id': 52305,
+            'ratings': {
+
+            },
+            'data': null
+        },
+        // Our love has always been 10 centimeters apart.
+        {
+            'id': 36220,
+            'ratings': {
+
+            },
+            'data': null
+        },
+        // Tsukigakirei
+        {
+            'id': 34822,
+            'ratings': {
+
+            },
+            'data': null
+        },
+        // Alya Sometimes Hides Her Feelings in Russian
+        {
+            'id': 54744,
+            'ratings': {
+
+            },
+            'data': null
+        },
+        // In/Spectre
+        {
+            'id': 39017,
+            'ratings': {
+
+            },
+            'data': null
+        },
+    ];
+
+    constructor(private api: Api, private cd: ChangeDetectorRef) {}
 
     ngOnInit() {
-        from(this.listIds)
-            .pipe(concatMap(id => this.api.getInfo(id)))
+        from(this.pageData)
+            .pipe(
+                concatMap(element => this.api.getInfo(element.id)
+                    .pipe(tap(response => element.data = response.data))
+                )
+            )
             .subscribe({
-                next: data => this.listData.push(data),
+                next: () => {},
                 error: err => console.error('API error:', err),
-                complete: () => console.log('All requests complete!\nResponse:', this.listData)
+                complete: () => {
+                    console.log('All requests complete!\nResponse:', this.pageData);
+                    // Detect changes explicitely
+                    this.cd.detectChanges();
+                }
             })
     }
 }

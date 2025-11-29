@@ -1,1 +1,7 @@
-<p>home works!</p>
+<h1>Ratings</h1>
+<br>
+@for (show of pageData; track show.id) {
+    @if (show.data) {
+        <app-show-card [showData]="show" />
+    }
+}
