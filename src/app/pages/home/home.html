@@ -2,6 +2,8 @@
 <br>
 <div class="card-container">
     @for (show of pageData; track show.id) {
-        <app-show-card [showData]="show"/>
+        @if (show.details != null && show.streaming != null) {
+            <app-show-card [showData]="show"/>
+        }
     }
 </div>

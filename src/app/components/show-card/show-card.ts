@@ -5,17 +5,21 @@ import { Component, Input } from '@angular/core';
     imports: [],
     template: `
         <div class="show-card">
-            <img />
+            <img src={{showData.details.images.jpg.image_url}}/>
             <div class="show-info">
-                <a href="" target="_blank" class="show-link">
-                <h1>Title</h1>
-                </a>
-                <p class="subtitle">year</p>
-                <p>Rating</p>
-                <p>Lorem Ipsum</p>
+                @if (findLink()) {
+                    <a href={{crLink}} target="_blank" class="show-link">
+                        <h1>{{showData.details.title_english}}</h1>
+                    </a>
+                } @else {
+                    <h1>{{showData.details.title_english}}</h1>
+                }
+                <p class="subtitle">{{showData.details.year}}</p>
+                <p>{{showData.details.rating}}</p>
+                <p>{{showData.details.synopsis}}</p>
             </div>
             <div class="rating-info">
-                <h1>Rating</h1>
+                <h1>Personal Rating: {{wholesomeRating}}/100</h1>
                 @if (showMore) {
                     <div class="rating-sections">
                         <div class="vert-line"></div>
@@ -179,4 +183,20 @@ export class ShowCard {
     @Input() showData: any;
 
     showMore: boolean = false;
+    crLink: string = "";
+    wholesomeRating: number = 0;
+
+    constructor() {
+        
+    }
+
+    findLink(): boolean {
+        this.showData.streaming.forEach((element: { name: string; url: string; }) => {
+            if (element.name == 'Crunchyroll') {
+                this.crLink = element.url;
+            }
+        });
+
+        return this.crLink != "";
+    }
 }
