@@ -4,6 +4,8 @@
     @for (show of pageData; track show.id) {
         @if (show.details != null && show.streaming != null) {
             <app-show-card [showData]="show"/>
+        } @else {
+            <h1>Loading...</h1>
         }
     }
 </div>

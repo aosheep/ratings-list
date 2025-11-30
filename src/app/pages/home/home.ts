@@ -192,37 +192,18 @@ export class Home {
     constructor(private api: Api, private cd: ChangeDetectorRef) {}
 
     ngOnInit() {
-        // Make requests for general info
-        from(this.pageData)
-            .pipe(
-                concatMap(element => this.api.getDetails(element.id)
-                    .pipe(tap(response => element.details = response.data))
-                )
-            )
-            .subscribe({
-                next: () => {},
-                error: err => console.error('API error:', err),
-                complete: () => {
-                    console.log('All data requests complete!');
-                    // Make requests for streaming info
-                    from(this.pageData)
-                        .pipe(
-                            concatMap(element => this.api.getStreamingInfo(element.id)
-                                .pipe(tap(response => element.streaming = response.data))
-                            )
-                        )
-                        .subscribe({
-                            next: () => {},
-                            error: err => console.error('API error:', err),
-                            complete: () => {
-                                console.log('All streaming requests complete!');
-                                console.log('Full data:', this.pageData);
-                                // Detect changes explicitely
-                                this.cd.detectChanges();
-                            }
-                        })
-                }
-            })
-        
+        // Make requests for details
+        this.pageData.forEach(element => {
+            this.api.getDetails(element.id).then((result: any) => {
+                element.details = result.data;
+                console.log(`Details Request Complete (${result.data.title_english})`);
+                this.cd.detectChanges();
+            });
+            this.api.getStreamingInfo(element.id).then((result: any) => {
+                element.streaming = result.data;
+                console.log(`Streaming Request Complete`);
+                this.cd.detectChanges();
+            });
+        });
     }
 }
