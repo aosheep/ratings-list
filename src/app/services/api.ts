@@ -17,7 +17,4 @@ export class Api {
   getStreamingInfo(id: number) {
     return this.queue.request(() => this.http.get(`${this.baseUrl}/anime/${id}/streaming`));
   }
-  getStreamingInfo(id: number): Observable<any> {
-    return this.http.get(`${this.baseUrl}/anime/${id}/streaming`);
-  }
 }
