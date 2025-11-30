@@ -10,7 +10,10 @@ export class Api {
 
   constructor(private http: HttpClient) {}
 
-  getInfo(id: number): Observable<any> {
+  getDetails(id: number): Observable<any> {
     return this.http.get(`${this.baseUrl}/anime/${id}`);
+  }
+  getStreamingInfo(id: number): Observable<any> {
+    return this.http.get(`${this.baseUrl}/anime/${id}/streaming`);
   }
 }
