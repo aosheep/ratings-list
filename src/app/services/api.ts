@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { RequestQueue } from './request-queue';
 
 @Injectable({
   providedIn: 'root',
@@ -8,9 +9,12 @@ import { Observable } from 'rxjs';
 export class Api {
   private baseUrl = 'https://api.jikan.moe/v4';
 
-  constructor(private http: HttpClient) {}
+  constructor(private queue: RequestQueue, private http: HttpClient) {}
 
-  getInfo(id: number): Observable<any> {
-    return this.http.get(`${this.baseUrl}/anime/${id}`);
+  getDetails(id: number) {
+    return this.queue.request(() => this.http.get(`${this.baseUrl}/anime/${id}`));
+  }
+  getStreamingInfo(id: number) {
+    return this.queue.request(() => this.http.get(`${this.baseUrl}/anime/${id}/streaming`));
   }
 }
